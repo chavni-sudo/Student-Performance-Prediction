@@ -1,4 +1,4 @@
-
+from sklearn.inspection import permutation_importance
 import os
 import numpy as np
 import pandas as pd
@@ -84,7 +84,25 @@ best_name = results_df.iloc[0]["Model"]
 best_model = models[best_name]
 
 joblib.dump(best_model, "models/student_performance_model.joblib")
+joblib.dump(best_model, "models/student_performance_model.joblib")
 
+# Generate Feature Importance
+feature_importance = pd.DataFrame({
+    "Feature": X_train.columns,
+    "Coefficient": best_model.coef_,
+    "Importance": abs(best_model.coef_)
+})
+
+feature_importance = feature_importance.sort_values(
+    by="Importance",
+    ascending=False
+)
+
+feature_importance.to_csv("feature_importance.csv", index=False)
+
+print("Feature importance saved successfully!")
+
+print(f"\nBest model: {best_name}")
 print(f"\nBest model: {best_name}")
 print("Model saved successfully!")
 print("Dataset saved successfully!")
